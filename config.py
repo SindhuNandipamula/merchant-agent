@@ -10,7 +10,6 @@ load_dotenv(BASE_DIR / ".env")
 RAZORPAY_KEY_ID = os.getenv("RAZORPAY_KEY_ID", "rzp_test_placeholder_key")
 RAZORPAY_KEY_SECRET = os.getenv("RAZORPAY_KEY_SECRET", "placeholder_secret")
 
-# Merchant Guardrail Constraints
 # Max order value allowed for automated AI agent checkout without human manual authorization
 MERCHANT_MAX_ORDER_VALUE = float(os.getenv("MERCHANT_MAX_ORDER_VALUE", "5000.0"))
 
