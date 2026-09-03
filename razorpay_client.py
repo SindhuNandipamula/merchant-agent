@@ -42,6 +42,7 @@ class RazorpayClientWrapper:
         amount_paise = int(round(amount_inr * 100))
         description = f"Order {order_id} - {product_name} via Agentic Commerce"
 
+        # Construct Razorpay Payment Link payload according to official Razorpay API specs
         if self.is_mock:
             # Mock mode response matching Razorpay Payment Link schema
             mock_id = f"plink_mock_{order_id}"
