@@ -7,7 +7,7 @@ Every action taken by both agents is **bounded** by strict merchant & buyer guar
 
 ---
 
-## 🏗 Architecture & Agent-to-Agent (A2A) Flow
+## Architecture & Agent-to-Agent (A2A) Flow
 
 ```
 ┌─────────────────────────────────┐                       ┌─────────────────────────────────────┐
@@ -40,7 +40,7 @@ Every action taken by both agents is **bounded** by strict merchant & buyer guar
 
 ---
 
-## 🛠️ Machine-Callable MCP Tools Interface
+## Machine-Callable MCP Tools Interface
 
 | Tool Name | Input Parameters | Description |
 |-----------|------------------|-------------|
@@ -69,7 +69,7 @@ Every action taken by both agents is **bounded** by strict merchant & buyer guar
 
 ---
 
-## 📋 Side-by-Side Explainable Audit Logs
+## Side-by-Side Explainable Audit Logs
 
 ### Buyer Agent Reasoning Log (`buyer_audit_log.jsonl`)
 ```json
