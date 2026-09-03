@@ -14,7 +14,7 @@ if hasattr(sys.stdout, 'reconfigure'):
     sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 
 
-# Initialize FastMCP Server
+# Initialize Fast MCP Server
 mcp = FastMCP(f"{config.MERCHANT_NAME} Storefront")
 
 # Global Razorpay Client instance
