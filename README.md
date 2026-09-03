@@ -52,7 +52,7 @@ Every action taken by both agents is **bounded** by strict merchant & buyer guar
 
 ---
 
-## 🛡️ Dual-Sided Guardrails (Buyer & Merchant Safety)
+## Dual-Sided Guardrails (Buyer & Merchant Safety)
 
 1. **Merchant Stock Availability Guardrail (`create_order`)**
    - Refuses order creation if `requested_quantity > stock_qty`.
@@ -112,7 +112,7 @@ Every action taken by both agents is **bounded** by strict merchant & buyer guar
 
 ---
 
-## 🚀 Running Instructions
+## Running Instructions
 
 ### 1. Environment Setup
 ```bash
@@ -147,7 +147,7 @@ python merchant_mcp_server.py
 
 ---
 
-## 📁 Repository Deliverables Manifest
+## Repository Deliverables Manifest
 
 - `data/catalog.json` - Product catalog (10 items for Bangalore Coffee Roasters)
 - `data/orders.json` - Local order persistence store
