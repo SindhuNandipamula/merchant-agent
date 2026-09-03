@@ -1,0 +1,133 @@
+[
+  {
+    "id": "prod_001",
+    "name": "Monsooned Malabar AA Coffee Beans (250g)",
+    "description": "Rich, low acidity roast with distinct notes of dark chocolate, earthiness, and spiced nuts. Grown in Western Ghats.",
+    "price": 550.0,
+    "stock_qty": 16,
+    "category": "coffee_beans",
+    "tags": [
+      "whole_bean",
+      "dark_roast",
+      "single_origin",
+      "best_seller"
+    ]
+  },
+  {
+    "id": "prod_002",
+    "name": "Chikmagalur Estate Medium Roast (250g)",
+    "description": "Smooth and aromatic medium roast with floral fragrance, hints of caramel, and citrus zest finish.",
+    "price": 480.0,
+    "stock_qty": 15,
+    "category": "coffee_beans",
+    "tags": [
+      "whole_bean",
+      "medium_roast",
+      "single_origin"
+    ]
+  },
+  {
+    "id": "prod_003",
+    "name": "Wayanad Robusta Espresso Blend (250g)",
+    "description": "Bold, strong espresso roast with intense crema, cocoa notes, and heavy body. Perfect for milk beverages.",
+    "price": 420.0,
+    "stock_qty": 22,
+    "category": "coffee_beans",
+    "tags": [
+      "espresso",
+      "dark_roast",
+      "robusta"
+    ]
+  },
+  {
+    "id": "prod_004",
+    "name": "Signature Cold Brew Concentrate (500ml)",
+    "description": "Steeped for 18 hours in cold filtered water. Highly concentrated brew with low acidity and naturally sweet taste.",
+    "price": 350.0,
+    "stock_qty": 10,
+    "category": "beverages",
+    "tags": [
+      "cold_brew",
+      "ready_to_mix",
+      "ready_to_drink"
+    ]
+  },
+  {
+    "id": "prod_005",
+    "name": "French Press Coffee Maker (350ml)",
+    "description": "Durable heat-resistant borosilicate glass carafe with fine stainless steel mesh filter plunger.",
+    "price": 1299.0,
+    "stock_qty": 8,
+    "category": "equipment",
+    "tags": [
+      "brewing_kit",
+      "french_press",
+      "accessories"
+    ]
+  },
+  {
+    "id": "prod_006",
+    "name": "Stainless Steel Pour-Over Dripper V60",
+    "description": "Reusable double-layer stainless steel mesh coffee filter cone for precise manual pour-over brewing.",
+    "price": 899.0,
+    "stock_qty": 11,
+    "category": "equipment",
+    "tags": [
+      "pour_over",
+      "v60",
+      "equipment"
+    ]
+  },
+  {
+    "id": "prod_007",
+    "name": "Handheld Conical Burr Coffee Grinder",
+    "description": "Adjustable ceramic burr manual hand grinder with stainless steel casing for consistent coffee grind size.",
+    "price": 2499.0,
+    "stock_qty": 5,
+    "category": "equipment",
+    "tags": [
+      "grinder",
+      "burr_grinder",
+      "manual"
+    ]
+  },
+  {
+    "id": "prod_008",
+    "name": "Unbleached V60 Filter Papers (100 Pack)",
+    "description": "Eco-friendly natural unbleached paper filters designed for Size 02 cone drippers. Zero paper taste.",
+    "price": 320.0,
+    "stock_qty": 50,
+    "category": "accessories",
+    "tags": [
+      "filter_paper",
+      "v60",
+      "accessories"
+    ]
+  },
+  {
+    "id": "prod_009",
+    "name": "Commercial Dual-Boiler Espresso Machine Pro",
+    "description": "Professional 2-group commercial espresso machine with PID temperature control and rotary pump.",
+    "price": 45000.0,
+    "stock_qty": 3,
+    "category": "equipment",
+    "tags": [
+      "commercial",
+      "espresso_machine",
+      "high_value"
+    ]
+  },
+  {
+    "id": "prod_010",
+    "name": "Limited Edition Ceramic Coffee Mug (300ml)",
+    "description": "Handcrafted pottery ceramic mug with Bangalore Coffee Roasters emblem.",
+    "price": 450.0,
+    "stock_qty": 0,
+    "category": "accessories",
+    "tags": [
+      "merch",
+      "mug",
+      "out_of_stock"
+    ]
+  }
+]
