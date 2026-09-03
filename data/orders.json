@@ -200,5 +200,20 @@
     "short_url": "https://rzp.io/rzp/mXxIhaD",
     "refusal_reason": null,
     "created_at": "2026-09-01T16:47:20.445962+00:00"
+  },
+  "ord_1788467964_de62": {
+    "order_id": "ord_1788467964_de62",
+    "product_id": "prod_003",
+    "product_name": "Wayanad Robusta Espresso Blend (250g)",
+    "quantity": 1,
+    "unit_price": 420.0,
+    "total_amount": 420.0,
+    "currency": "INR",
+    "buyer_agent_id": "agent_buyer_alpha",
+    "status": "pending_payment",
+    "razorpay_payment_link_id": "plink_TXhOdt2RE8J4KU",
+    "short_url": "https://rzp.io/rzp/Pc0OhLy",
+    "refusal_reason": null,
+    "created_at": "2026-09-03T20:39:24.907782+00:00"
   }
 }
