@@ -125,6 +125,18 @@ Running `python buyer_agent_demo.py` executes 5 comprehensive demo scenarios sho
 
 ---
 
+## Why This Meets the Track's Bar
+
+To meet the Agentic Commerce track bar, every monetary action must be explainable, bounded, gated, backed by an audit trail, and handle failures gracefully.
+
+- **Explainable**: Every action and refusal on both agents carries a structured, human-readable reason string in its log payload.
+- **Bounded**: Four code-enforced guardrails (merchant stock availability, merchant max order limit, buyer single-item budget cap, and buyer quantity multiplier cap) control execution boundaries without relying on LLM self-policing.
+- **Gated**: Tool execution is strictly gated; `create_order` halts on stock deficits and `create_payment_link` halts on threshold breaches before calling Razorpay APIs.
+- **Audit Trail**: Dual append-only JSONL logs (`buyer_audit_log.jsonl` for buyer cognitive reasoning and `audit_log.jsonl` for merchant MCP execution) record every event, demonstrated live in Scenario 5.
+- **Graceful Failure Handling**: Proven live refusal paths in Scenario 4 (merchant refusing the ₹45,000 order) and Scenarios 2 & 3 (buyer budget cap refusals) handle out-of-bounds commerce requests safely.
+
+---
+
 ## Running Instructions
 
 ### 1. Environment Setup
@@ -175,3 +187,16 @@ python merchant_mcp_server.py
 - `.env.example` - Template for environment credentials
 - `.gitignore` - Git ignore rules keeping secrets out of repository
 - `README.md` - Technical documentation and architecture guide
+
+---
+
+## Honest Scope & What's Next
+
+This project is a focused two-agent, single-merchant demo designed to prove the core Agent-to-Agent (A2A) commerce mechanism under real guardrails, rather than a full multi-party marketplace. The Buyer Agent is genuinely autonomous—using LLM reasoning to parse goals and select baskets—while the Merchant Agent MCP server is intentionally rule-based and deterministic, ensuring pricing and safety limits are auditable every time rather than left to model discretion.
+
+**Next Steps:**
+- **Multi-merchant comparison**: Enable buyer agents to query and select items across multiple competing merchant MCP servers.
+- **Near-miss substitute handling**: Implement decision logic for close catalog matches to propose substitutes or request user confirmation.
+- **Webhook payment confirmation**: Transition from `get_order_status` polling to real-time Razorpay webhooks.
+- **Agent-to-Agent negotiation**: Support dynamic discounting and bundle negotiation protocols between agents.
+
