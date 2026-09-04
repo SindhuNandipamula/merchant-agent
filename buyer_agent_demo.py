@@ -1,10 +1,11 @@
 import json
 import sys
+import time
 from pathlib import Path
 
 import config
 from buyer_agent import AutonomousBuyerAgent, BUYER_AUDIT_LOG_PATH
-from merchant_mcp_server import _ensure_files
+from merchant_mcp_server import _ensure_files, execute_get_order_status
 
 # Fix Windows console UTF-8 printing safely
 if hasattr(sys.stdout, 'reconfigure'):
@@ -40,11 +41,25 @@ def run_agent_demo():
     if result1.get("payment_links"):
         for pl in result1["payment_links"]:
             if pl.get("payment_link"):
+                order_id = pl.get("order_id")
                 print("\n" + "*" * 80)
                 print(f"🔗 LIVE RAZORPAY PAYMENT LINK GENERATED FOR BUYER AGENT:")
                 print(f"   Checkout URL: {pl['payment_link']}")
                 print(f"   Razorpay Link ID: {pl.get('razorpay_payment_link_id')}")
                 print("*" * 80)
+
+                # Live demo polling loop: check order status every 3s (max 10 attempts)
+                if order_id:
+                    print(f"\n🔄 Polling Order Status for Order '{order_id}' every 3 seconds (max 10 attempts)...")
+                    for attempt in range(1, 11):
+                        status_res = execute_get_order_status(order_id, buyer_agent_id="agent_buyer_alpha")
+                        current_status = status_res.get("status", "unknown")
+                        print(f"   [Attempt {attempt:2d}/10] Order '{order_id}' Status: {current_status}")
+                        if current_status == "paid":
+                            print(f"\n🎉 PAYMENT CONFIRMED! Order '{order_id}' status transitioned from 'pending_payment' -> 'paid'.")
+                            break
+                        if attempt < 10:
+                            time.sleep(3)
 
     # =========================================================================
     # SCENARIO 2: BUYER GUARDRAIL REFUSAL (SINGLE ITEM EXCEEDS BUDGET)
