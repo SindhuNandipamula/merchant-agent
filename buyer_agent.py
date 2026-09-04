@@ -113,6 +113,8 @@ class AutonomousBuyerAgent:
             matched_candidates = [p for p in all_candidates if "grinder" in p.get("name", "").lower() or "grinder" in p.get("category", "").lower()]
         elif "malabar" in goal_lower:
             matched_candidates = [p for p in all_candidates if "malabar" in p.get("name", "").lower()]
+        elif "commercial" in goal_lower or "espresso machine" in goal_lower or "prod_009" in goal_lower:
+            matched_candidates = [p for p in all_candidates if p.get("id") == "prod_009" or "commercial" in p.get("name", "").lower()]
         elif "beans" in goal_lower:
             matched_candidates = [p for p in all_candidates if p.get("category") == "coffee_beans"]
         else:

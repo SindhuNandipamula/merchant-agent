@@ -48,18 +48,18 @@ def run_agent_demo():
                 print(f"   Razorpay Link ID: {pl.get('razorpay_payment_link_id')}")
                 print("*" * 80)
 
-                # Live demo polling loop: check order status every 3s (max 10 attempts)
+                # Live demo polling loop: check order status every 5s (up to 12 attempts / 1 minute)
                 if order_id:
-                    print(f"\n🔄 Polling Order Status for Order '{order_id}' every 3 seconds (max 10 attempts)...")
-                    for attempt in range(1, 11):
+                    print(f"\n🔄 Polling Order Status for Order '{order_id}' every 5 seconds (up to 12 attempts / 1 minute)...")
+                    for attempt in range(1, 13):
                         status_res = execute_get_order_status(order_id, buyer_agent_id="agent_buyer_alpha")
                         current_status = status_res.get("status", "unknown")
-                        print(f"   [Attempt {attempt:2d}/10] Order '{order_id}' Status: {current_status}")
+                        print(f"   [Attempt {attempt:2d}/12] Checking order status... {current_status}")
                         if current_status == "paid":
                             print(f"\n🎉 PAYMENT CONFIRMED! Order '{order_id}' status transitioned from 'pending_payment' -> 'paid'.")
                             break
-                        if attempt < 10:
-                            time.sleep(3)
+                        if attempt < 12:
+                            time.sleep(5)
 
     # =========================================================================
     # SCENARIO 2: BUYER GUARDRAIL REFUSAL (SINGLE ITEM EXCEEDS BUDGET)
@@ -102,9 +102,37 @@ def run_agent_demo():
         print("\n✅ SUCCESS: Buyer guardrail correctly REFUSED tool execution on quantity multiplier total check.")
 
     # =========================================================================
-    # SCENARIO 4: SIDE-BY-SIDE EXPLAINABLE AUDIT LOGS
+    # SCENARIO 4: MERCHANT GUARDRAIL REFUSAL (MAX ORDER VALUE)
     # =========================================================================
-    print_banner("=== SCENARIO 4: Side-by-Side Explainable Audit Logs ===")
+    print_banner("=== SCENARIO 4: Merchant Guardrail Refusal (Max Order Value) ===")
+    user_goal4 = "Buy me a Commercial Dual-Boiler Espresso Machine Pro"
+    user_budget4 = 50000.0  # ₹45,000 espresso machine. Buyer budget cap (₹50,000) permits, but Merchant limit (₹5,000) refuses payment link.
+
+    buyer_agent4 = AutonomousBuyerAgent(
+        buyer_agent_id="agent_buyer_delta",
+        budget_cap=user_budget4
+    )
+
+    print(f"Goal: '{user_goal4}' | Buyer Budget Cap: ₹{user_budget4:.2f} | Merchant Max Order Limit: ₹{config.MERCHANT_MAX_ORDER_VALUE:.2f}")
+    result4 = buyer_agent4.run(goal=user_goal4)
+    print("\n[MERCHANT GUARDRAIL REFUSAL RESULT]:")
+    print(json.dumps(result4, indent=2))
+
+    merchant_refusal_msg = None
+    if result4.get("payment_links"):
+        for pl in result4["payment_links"]:
+            if pl.get("status") == "refused" or "exceeds merchant maximum" in str(pl.get("error", "")):
+                merchant_refusal_msg = pl.get("error") or pl.get("refusal_reason")
+                break
+
+    if merchant_refusal_msg:
+        print(f"\n🛡️ [MERCHANT GUARDRAIL TRIGGERED]: {merchant_refusal_msg}")
+        print("\n✅ SUCCESS: Merchant guardrail correctly REFUSED automated payment link for high-value order (>₹5,000 limit).")
+
+    # =========================================================================
+    # SCENARIO 5: SIDE-BY-SIDE EXPLAINABLE AUDIT LOGS
+    # =========================================================================
+    print_banner("=== SCENARIO 5: Side-by-Side Explainable Audit Logs ===")
 
     print(f"1. BUYER AGENT REASONING AUDIT LOG ({BUYER_AUDIT_LOG_PATH}):")
     if BUYER_AUDIT_LOG_PATH.exists():
