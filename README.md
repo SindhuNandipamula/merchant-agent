@@ -56,16 +56,34 @@ Every action taken by both agents is **bounded** by strict merchant & buyer guar
 
 1. **Merchant Stock Availability Guardrail (`create_order`)**
    - Refuses order creation if `requested_quantity > stock_qty`.
-   - Returns structured refusal reason `INSUFFICIENT_STOCK`.
+   - Returns structured refusal reason `INSUFFICIENT_STOCK` and logs refusal event in `audit_log.jsonl`.
 
 2. **Merchant Maximum Order Value Limit (`create_payment_link`)**
    - Configurable threshold: `MERCHANT_MAX_ORDER_VALUE` (default: **₹5,000 INR**).
-   - Refuses automated Razorpay payment link generation for high-value orders (e.g. commercial espresso machines at ₹45,000). High-value transactions return status `refused_exceeds_limit` and require human authorization.
+   - Refuses automated Razorpay payment link generation for high-value orders (e.g. commercial espresso machines at ₹45,000). High-value transactions return status `refused_exceeds_limit` and require human authorization. Verified in **Scenario 4**.
 
 3. **Buyer Hard Budget Cap Guardrail (`buyer_agent.py`)**
    - Code-enforced hard check: `item_total <= budget_cap` (evaluated for both single-item price and quantity multiplier totals).
    - Buyer agent refuses to call `create_order` if candidate product total exceeds the budget cap.
-   - Refusals are logged with human-readable reason string and `"guardrail_triggered": true` in `buyer_audit_log.jsonl`. Verified in demo scenarios 2 and 3.
+   - Refusals are logged with human-readable reason string and `"guardrail_triggered": true` in `buyer_audit_log.jsonl`. Verified in **Scenario 2** and **Scenario 3**.
+
+---
+
+## Agent-to-Agent Demo Scenarios (`buyer_agent_demo.py`)
+
+Running `python buyer_agent_demo.py` executes 5 comprehensive demo scenarios showcasing autonomous agent commerce and safety:
+
+- **Scenario 1: Successful Autonomous Purchase & Real-Time Status Polling**
+  - Buyer agent parses goal ("coffee beans and brewing method under ₹2000"), checks budget, places order, generates live Razorpay Payment Link, and polls `get_order_status` every 5 seconds (up to 12 attempts / 1 minute).
+  - Demonstrates real-time transition from `pending_payment` to `paid` when payment is completed in browser.
+- **Scenario 2: Buyer Guardrail Refusal (Single Item Price Exceeds Budget)**
+  - Goal requests ₹2,499 burr grinder with ₹1,000 budget cap. Buyer agent refuses execution before creating order.
+- **Scenario 3: Buyer Guardrail Refusal (Quantity Multiplier Exceeds Budget)**
+  - Goal requests 3x coffee beans (₹1,650 total) with ₹1,200 budget cap. Buyer agent evaluates multiplier cost and refuses tool execution.
+- **Scenario 4: Merchant Guardrail Refusal (Max Order Value Threshold Exceeded)**
+  - Buyer agent (budget cap ₹50,000) places order for ₹45,000 Commercial Espresso Machine. Buyer permits, but Merchant MCP `create_payment_link` refuses execution due to ₹5,000 max order value limit.
+- **Scenario 5: Side-by-Side Explainable Audit Logs**
+  - Displays summary metrics and latest refusal entries from both `buyer_audit_log.jsonl` (buyer reasoning) and `audit_log.jsonl` (merchant execution).
 
 ---
 
@@ -74,39 +92,34 @@ Every action taken by both agents is **bounded** by strict merchant & buyer guar
 ### Buyer Agent Reasoning Log (`buyer_audit_log.jsonl`)
 ```json
 {
-  "timestamp": "2026-09-01T15:36:36.368102+00:00",
-  "event_id": "bagt_a2b3c4d5",
-  "buyer_agent_id": "agent_buyer_alpha",
-  "goal": "Buy me coffee beans and a brewing method under ₹2000",
-  "budget_cap": 2000.0,
-  "step": "basket_selection",
-  "reasoning": "Evaluated available products against budget cap of ₹2000.00. Selected basket: Wayanad Robusta Espresso Blend (250g) (₹420.0), Stainless Steel Pour-Over Dripper V60 (₹899.0). Total basket cost = ₹1319.00.",
-  "decision": "purchase_basket: ['prod_003', 'prod_006']",
-  "tool_calls": [{"tool": "get_product", "params": {"product_id": "prod_003"}}, {"tool": "get_product", "params": {"product_id": "prod_006"}}],
-  "status": "SUCCESS"
+  "timestamp": "2026-09-04T09:54:45.670620+00:00",
+  "event_id": "bagt_486ba33483",
+  "buyer_agent_id": "agent_buyer_gamma",
+  "goal": "Buy me 3 packs of Monsooned Malabar AA Coffee Beans",
+  "budget_cap": 1200.0,
+  "step": "evaluate_candidates",
+  "reasoning": "Evaluated candidate 'Monsooned Malabar AA Coffee Beans (250g)' at ₹550.00 each for quantity 3. Total calculated cost ₹1650.00 exceeds buyer hard budget cap of ₹1200.00. Refusing to execute create_order tool call.",
+  "decision": "refuse_order_budget_guardrail",
+  "tool_calls": [],
+  "status": "REFUSED",
+  "guardrail_triggered": true,
+  "refusal_reason": "REFUSAL: No valid purchase possible within budget cap of ₹1200.00; match 'Monsooned Malabar AA Coffee Beans (250g)' total cost is ₹1650.00 (3x ₹550.00)."
 }
 ```
 
 ### Merchant Execution Log (`audit_log.jsonl`)
 ```json
 {
-  "timestamp": "2026-09-01T15:36:36.415012+00:00",
-  "event_id": "evt_9019a1b2",
+  "timestamp": "2026-09-04T09:54:45.734665+00:00",
+  "event_id": "evt_e3b83166cf",
   "tool_name": "create_payment_link",
-  "buyer_agent_id": "agent_buyer_alpha",
-  "inputs": {"order_id": "ord_1788276996_a37b"},
-  "status": "SUCCESS",
-  "guardrail_triggered": false,
-  "outputs": {
-    "order_id": "ord_1788276996_a37b",
-    "total_amount": 420.0,
-    "currency": "INR",
-    "payment_link": "https://rzp.io/rzp/5FDLP2O",
-    "razorpay_payment_link_id": "plink_TWpAZylAn2hHpx",
-    "status": "pending_payment"
-  },
-  "refusal_reason": null,
-  "execution_time_ms": 138.42
+  "buyer_agent_id": "agent_buyer_delta",
+  "inputs": {"order_id": "ord_1788515685_7a7c", "total_amount": 45000.0},
+  "status": "REFUSED",
+  "guardrail_triggered": true,
+  "outputs": null,
+  "refusal_reason": "REFUSAL: Order total ₹45000.00 exceeds merchant maximum automated checkout threshold of ₹5000.00. High-value transactions require manual merchant approval.",
+  "execution_time_ms": 22.9
 }
 ```
 
@@ -127,10 +140,10 @@ cp .env.example .env
 ```
 
 ### 2. Run Autonomous Agent-to-Agent Demo
-Executes autonomous buyer reasoning, budget evaluation, order placement, Razorpay payment link creation, guardrail validation, and prints dual audit logs:
+Executes autonomous buyer reasoning, budget evaluation, order placement, Razorpay payment link creation, status polling loop, merchant guardrail validation, and prints dual audit logs:
 
 ```bash
-python buyer_agent_demo.py
+python -u buyer_agent_demo.py
 ```
 
 ### 3. Run Scripted Test Harness
@@ -154,7 +167,7 @@ python merchant_mcp_server.py
 - `merchant_mcp_server.py` - FastMCP server implementing 5 tools, guardrails & execution audit logging
 - `razorpay_client.py` - Razorpay Payment Links API integration wrapper
 - `buyer_agent.py` - Autonomous buyer agent with cognitive reasoning loop & buyer budget guardrails
-- `buyer_agent_demo.py` - Agent-to-Agent end-to-end demo harness & side-by-side audit logger
+- `buyer_agent_demo.py` - Agent-to-Agent end-to-end demo harness (Scenarios 1-5) & side-by-side audit logger
 - `test_buyer_flow.py` - Scripted buyer test harness
 - `config.py` - Environment configuration and merchant limits
 - `audit_log.jsonl` - Append-only merchant audit log
